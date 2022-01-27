@@ -20,4 +20,24 @@ return [
     |
     */
     'enabled' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Flashlight Middleware
+    |--------------------------------------------------------------------------
+    |
+    | This class is responsible for everything flashlight does.
+    |
+    */
+    'flashlight_middleware' => HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Flashlight log file
+    |--------------------------------------------------------------------------
+    |
+    | The address in which all flashlight logs are stored.
+    |
+    */
+    'path_to_log_file' => storage_path('logs/flashlight.log'),
 ];

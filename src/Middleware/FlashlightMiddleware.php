@@ -16,6 +16,8 @@ class FlashlightMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        $request->flashlight();
+
         return $next($request);
     }
 }
