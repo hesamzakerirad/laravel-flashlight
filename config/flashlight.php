@@ -40,4 +40,14 @@ return [
     |
     */
     'path_to_log_file' => storage_path('logs/flashlight.log'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Excluded HTTP Methods
+    |--------------------------------------------------------------------------
+    |
+    | The list of HTTP method which flashlight won't log.
+    |
+    */
+    'excluded_methods' => [],
 ];

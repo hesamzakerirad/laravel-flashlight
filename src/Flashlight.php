@@ -58,7 +58,7 @@ class Flashlight
      */
     public function shouldBeIgnored(Request $request) 
     {
-        return false;
+        return in_array($request->method(), $this->config('excluded_methods'));
     }
 
     /**
