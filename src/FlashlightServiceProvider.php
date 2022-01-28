@@ -17,7 +17,7 @@ class FlashlightServiceProvider extends ServiceProvider
         Request::macro('flashlight', function () {
             $flashlight = new Flashlight(config('flashlight'));
 
-            $flashlight->call();
+            $flashlight->call($this);
         });
     }
 

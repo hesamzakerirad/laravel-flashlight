@@ -2,6 +2,7 @@
 
 namespace HesamRad\Flashlight;
 
+use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\Log;
 
 class Flashlight
@@ -21,7 +22,7 @@ class Flashlight
      * Returns flashlight configuration/s.
      *
      * @param  string|null  $key
-     * @return string|null
+     * @return mixed
      */
     public function config(string $key = null)
     {
@@ -39,37 +40,73 @@ class Flashlight
     }
     
     /**
-     * Logs something.
+     * Prepares the request to be logged.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    public function log()
+    public function prepare(Request $request)
+    {
+        return $this->shouldBeIgnored($request) ?: $this->log($request);          
+    }
+
+    /**
+     * Checks to see if request can be logged.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    public function shouldBeIgnored(Request $request) 
+    {
+        return false;
+    }
+
+    /**
+     * Formats the request in a readble way to be logged.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string
+     */
+    public function format(Request $request)
+    {
+        return $request->ip() . ' ' . $request->method() . ' ' . $request->path();
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    public function log(Request $request) 
     {
         Log::build([
             'driver' => 'single',
             'path' => $this->config('path_to_log_file')
-        ])->info('Hey I am working...');          
+        ])->info($this->format($request));
     }
     
     /**
      * Calls flashlight to see if it'll run.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    public function call()
+    public function call(Request $request)
     {
-        return ! $this->enabled() ?: $this->run();
+        return ! $this->enabled() ?: $this->run($request);
     }
     
     /**
      * Flashlight starts to work.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    public function run()
+    public function run(Request $request)
     {
-        //here's where the magic happens ... 
+        $this->prepare($request);
 
-        $this->log();
+        //other stuff are coming up... :)
     }
 }
