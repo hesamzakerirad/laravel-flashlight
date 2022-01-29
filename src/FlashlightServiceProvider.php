@@ -14,11 +14,13 @@ class FlashlightServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Request::macro('flashlight', function () {
-            $flashlight = new Flashlight(config('flashlight'));
+        //publish config file
+        $this->publishes([
+            __DIR__.'/../config/flashlight.php' => config_path('flashlight.php')
+        ], 'flashlight-config');
 
-            $flashlight->call($this);
-        });
+        //register middleware
+        app('router')->aliasMiddleware('flashlight', config('flashlight.middleware_class'));
     }
 
     /**
@@ -28,12 +30,10 @@ class FlashlightServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //publish config file
-        $this->publishes([
-            __DIR__.'/../config/flashlight.php' => config_path('flashlight.php')
-        ], 'flashlight-config');
+        Request::macro('flashlight', function () {
+            $flashlight = new Flashlight(config('flashlight'));
 
-        //register middleware
-        app('router')->aliasMiddleware('flashlight', config('flashlight.middleware_class'));
+            $flashlight->call($this);
+        });
     }
 }
