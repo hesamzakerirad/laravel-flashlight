@@ -1,4 +1,4 @@
-![Flashlight Cover](https://raw.githubusercontent.com/hesamzakerirad/laravel-flashlight/master/media/cover.png "Flashlight Cover")
+![Flashlight Cover](https://raw.githubusercontent.com/hesamzakerirad/laravel-flashlight/master/media/cover.jpg "Flashlight Cover")
 # Laravel Flashlight
 Laravel-Flashlight is a minimal package to log incoming requests to your application; it is highly customizable and easy to install.
 
