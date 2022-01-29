@@ -28,6 +28,9 @@ class FlashlightServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        //publish config file
+        $this->publishes([
+            __DIR__.'/../config/flashlight.php' => config_path('flashlight.php')
+        ], 'flashlight-config');
     }
 }
