@@ -2,6 +2,7 @@
     "name": "hesamrad/laravel-flashlight",
     "description": "A Laravel Package to Log Requests",
     "type": "library",
+    "license": "MIT",
     "homepage": "https://github.com/hesamzakerirad/laravel-flashlight",
     "keywords": [
         "log",
