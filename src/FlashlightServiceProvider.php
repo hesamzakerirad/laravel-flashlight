@@ -32,5 +32,8 @@ class FlashlightServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/flashlight.php' => config_path('flashlight.php')
         ], 'flashlight-config');
+
+        //register middleware
+        app('router')->aliasMiddleware('flashlight', config('flashlight.middleware_class'));
     }
 }

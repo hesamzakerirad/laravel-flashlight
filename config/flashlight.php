@@ -1,14 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Logger configurations
-|--------------------------------------------------------------------------
-|
-| These are the options to choose...
-|
-*/
-
 return [
 
     /*
@@ -29,7 +20,7 @@ return [
     | This class is responsible for everything flashlight does.
     |
     */
-    'flashlight_middleware' => HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,
+    'middleware_class' => HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,
 
     /*
     |--------------------------------------------------------------------------
