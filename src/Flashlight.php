@@ -28,6 +28,28 @@ class Flashlight
     {
         return isset($key) ? $this->config[$key] : $this->config;
     }
+
+    /**
+     * Returns the excluded HTTP methods that 
+     * are not supposed to be logged by flashlight.
+     *
+     * @return array|null
+     */
+    public function excludedMethods()
+    {
+        return $this->config('excluded_methods');
+    }
+
+    /**
+     * Returns the excluded URIs that 
+     * are not supposed to be logged by flashlight.
+     *
+     * @return array|null
+     */
+    public function excludedUris()
+    {
+        return $this->config('excluded_uris');
+    }
     
     /**
      * Checks to see if flashlight is enabled.
@@ -58,7 +80,9 @@ class Flashlight
      */
     public function shouldBeIgnored(Request $request) 
     {
-        return in_array($request->method(), $this->config('excluded_methods'));
+        return 
+            in_array($request->method(), $this->excludedMethods()) || 
+            in_array($request->path(), $this->excludedUris());
     }
 
     /**

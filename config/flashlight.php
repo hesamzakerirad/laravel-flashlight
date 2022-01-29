@@ -46,8 +46,18 @@ return [
     | Excluded HTTP Methods
     |--------------------------------------------------------------------------
     |
-    | The list of HTTP method which flashlight won't log.
+    | The list of HTTP methods which flashlight won't log.
     |
     */
     'excluded_methods' => [],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Excluded URIs
+    |--------------------------------------------------------------------------
+    |
+    | The list of URIs which flashlight won't log.
+    |
+    */
+    'excluded_uris' => [],
 ];
