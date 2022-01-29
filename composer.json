@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Hesamrad\\Flashlight\\": "src/"
+            "Hesamrad\\Flashlight\\": "src"
         }
     },
     "autoload-dev": {
