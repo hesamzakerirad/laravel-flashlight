@@ -2,8 +2,21 @@
     "name": "hesamrad/laravel-flashlight",
     "description": "A Laravel Package to Log Requests",
     "type": "library",
+    "homepage": "https://github.com/hesamzakerirad/laravel-flashlight",
+    "keywords": [
+        "log",
+        "laravel"
+    ],
+    "authors": [
+        {
+            "name": "Hesam Rad",
+            "email": "hesamzakerirad@gmail.com",
+            "homepage": "https://webly.agency",
+            "role": "Developer"
+        }
+    ],
     "require": {
-        "php": "^7.4|^8.0|^8.1"
+        "php": "^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.3"
@@ -18,12 +31,6 @@
             "HesamRad\\Flashlight\\Tests\\": "tests"
         }
     },
-    "authors": [
-        {
-            "name": "Hesam Rad",
-            "email": "hesamzakerirad@gmail.com"
-        }
-    ],
     "extra": {
         "laravel": {
             "providers": [
