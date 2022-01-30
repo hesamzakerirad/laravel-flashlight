@@ -32,7 +32,7 @@ And you're done!
 
 Now every request that goes through Flashlight will be logged to be monitored later.
 
-Note that all Flashlight logs are stored in `flashlight.log` file under `storage/logs/flashlight.log`.
+Note that all Flashlight logs are stored in `flashlight.log` file under `storage/logs`.
 
 ---
 ## How to customize Flashlight?
