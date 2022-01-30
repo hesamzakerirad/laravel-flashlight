@@ -8,14 +8,14 @@ Take these steps to install Flashlight.
 ### Step #1
 Install the package from Composer.
 
-```
+```php
 composer require hesamrad/laravel-flashlight
 ```
 
 ### Step #2
 Publish congifuration file.
 
-```
+```php
 php artisan vendor:publish --provider="HesamRad\Flashlight\FlashlightServiceProvider" --tag="flashlight-config"
 ```
 
@@ -48,12 +48,12 @@ Note that by default Flashlight **is** enabled.
 ---
 ### HTTP Method Customization
 
-If you wish to customize HTTP methods to log you can do so by editing `excluded_methods` array inside `flashlight.php` config file under `App/config`.
+If you wish to customize HTTP methods to log, you can do so by editing `excluded_methods` array inside `flashlight.php` config file under `App/config`.
 
 For example:
 ```php
 'excluded_methods' => [
-    'PUT',
+    'put',
 ]
 ```
 By doing this, all `PUT` requests are ignored by Flashlight.
@@ -61,9 +61,48 @@ By doing this, all `PUT` requests are ignored by Flashlight.
 Note that by default all HTTP method **are** logged by Flashlight.
 
 ---
+### Log Request Headers
+
+If you wish to log request headers, you can do so by editing `log_headers` key inside `flashlight.php` config file under `App/config`.
+
+```php
+'log_headers' => true
+```
+Note that by default request headers **are** logged by Flashlight.
+
+---
+
+### Log Request Body
+
+If you wish to log request body, you can do so by editing `log_body` key inside `flashlight.php` config file under `App/config`.
+
+```php
+'log_body' => true
+```
+Note that by default request body **is** logged by Flashlight.
+
+---
+
+### Request Parameters Customization
+
+If you wish to customize request parameters to log, you can do so by editing `excluded_parameters` array inside `flashlight.php` config file under `App/config`.
+
+For example:
+```php
+'excluded_parameters' => [
+    'password',
+    'password_confirmation',
+]
+```
+By doing this, all specified parameters are ignored by Flashlight.
+
+Note that by default `password` and `password_confirmation` parameters **are** ignored by Flashlight.
+
+---
+
 ### URI Customization
 
-If you wish to customize URIs to log you can do so by editing `excluded_uris` array inside `flashlight.php` config file under `App/config`.
+If you wish to customize URIs to log, you can do so by editing `excluded_uris` array inside `flashlight.php` config file under `App/config`.
 
 For example:
 ```php
