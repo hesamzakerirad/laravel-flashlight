@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 class Flashlight
 {
     /**
-     * Creates a new flashlight object.
+     * Creates a new Flashlight object.
      *
      * @param  array  $config
      * @return void
@@ -19,7 +19,7 @@ class Flashlight
     }
 
     /**
-     * Returns flashlight configuration/s.
+     * Returns Flashlight configuration/s.
      *
      * @param  string|null  $key
      * @return mixed
@@ -31,7 +31,7 @@ class Flashlight
 
     /**
      * Returns the excluded HTTP methods that 
-     * are not supposed to be logged by flashlight.
+     * are not supposed to be logged by Flashlight.
      *
      * @return array|null
      */
@@ -41,8 +41,40 @@ class Flashlight
     }
 
     /**
+     * Checks to see if Flashlight is enabled.
+     *
+     * @return bool
+     */
+    public function enabled()
+    {
+        return $this->config('enabled') == true;
+    }
+
+    /**
+     * Checks to see if Flashlight can log request
+     * headers.
+     *
+     * @return bool
+     */
+    public function logHeaders()
+    {
+        return $this->config('log_headers') == true;
+    }
+
+    /**
+     * Checks to see if Flashlight can log request
+     * body.
+     *
+     * @return bool
+     */
+    public function logBody()
+    {
+        return $this->config('log_body') == true;
+    }
+
+    /**
      * Returns the excluded URIs that 
-     * are not supposed to be logged by flashlight.
+     * are not supposed to be logged by Flashlight.
      *
      * @return array|null
      */
@@ -50,15 +82,16 @@ class Flashlight
     {
         return $this->config('excluded_uris');
     }
-    
+
     /**
-     * Checks to see if flashlight is enabled.
+     * Returns the excluded parameters that 
+     * are not supposed to be logged by Flashlight.
      *
-     * @return bool
+     * @return array|null
      */
-    public function enabled()
+    public function excludedParameters()
     {
-        return $this->config('enabled') == true;
+        return $this->config('excluded_parameters');
     }
     
     /**
@@ -67,7 +100,7 @@ class Flashlight
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    public function prepare(Request $request)
+    public function run(Request $request)
     {
         return $this->shouldBeIgnored($request) ?: $this->log($request);          
     }
@@ -76,13 +109,13 @@ class Flashlight
      * Checks to see if request can be logged.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @return bool
      */
     public function shouldBeIgnored(Request $request) 
     {
         return 
-            in_array($request->method(), $this->excludedMethods()) || 
-            in_array($request->path(), $this->excludedUris());
+            in_array(strtolower($request->method()), $this->excludedMethods()) || 
+            in_array(strtolower($request->path()), $this->excludedUris());
     }
 
     /**
@@ -93,7 +126,13 @@ class Flashlight
      */
     public function format(Request $request)
     {
-        return $request->ip() . ' ' . $request->method() . ' ' . $request->path();
+        return json_encode([
+            'ip' => $request->ip(),
+            'method' => $request->method(),
+            'address' => $request->getPathInfo(),
+            'headers' => $this->logHeaders() ? $request->header() : null,
+            'body' => $this->logBody() ? $request->except($this->excludedParameters()) : null
+        ]);
     }
 
     /**
@@ -111,7 +150,7 @@ class Flashlight
     }
     
     /**
-     * Calls flashlight to see if it'll run.
+     * Calls Flashlight to see if it'll run.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return void
@@ -119,18 +158,5 @@ class Flashlight
     public function call(Request $request)
     {
         return ! $this->enabled() ?: $this->run($request);
-    }
-    
-    /**
-     * Flashlight starts to work.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    public function run(Request $request)
-    {
-        $this->prepare($request);
-
-        //other stuff are coming up... :)
     }
 }
