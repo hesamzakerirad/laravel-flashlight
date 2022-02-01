@@ -5,8 +5,10 @@
     "license": "MIT",
     "homepage": "https://github.com/hesamzakerirad/laravel-flashlight",
     "keywords": [
+        "laravel",
+        "php",
         "log",
-        "laravel"
+        "http"
     ],
     "authors": [
         {
