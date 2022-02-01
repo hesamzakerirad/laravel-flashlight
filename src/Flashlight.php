@@ -95,7 +95,8 @@ class Flashlight
     }
 
     /**
-     * Checks to see if request can be logged.
+     * Checks to see if request should be ignored
+     * or not.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
@@ -125,7 +126,7 @@ class Flashlight
     }
 
     /**
-     * Undocumented function
+     * Logs the request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return void
@@ -139,7 +140,7 @@ class Flashlight
     }
 
     /**
-     * Prepares the request to be logged.
+     * Checks to see if request can be logged.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return void
@@ -150,7 +151,7 @@ class Flashlight
     }
     
     /**
-     * Checks so see if Flashlight will check.
+     * Checks so see if Flashlight will run.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return void
