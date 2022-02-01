@@ -93,17 +93,6 @@ class Flashlight
     {
         return $this->config('excluded_parameters');
     }
-    
-    /**
-     * Prepares the request to be logged.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    public function run(Request $request)
-    {
-        return $this->shouldBeIgnored($request) ?: $this->log($request);          
-    }
 
     /**
      * Checks to see if request can be logged.
@@ -148,15 +137,26 @@ class Flashlight
             'path' => $this->config('path_to_log_file')
         ])->info($this->format($request));
     }
-    
+
     /**
-     * Calls Flashlight to see if it'll run.
+     * Prepares the request to be logged.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    public function call(Request $request)
+    public function check(Request $request)
     {
-        return ! $this->enabled() ?: $this->run($request);
+        return $this->shouldBeIgnored($request) ?: $this->log($request);          
+    }
+    
+    /**
+     * Checks so see if Flashlight will check.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    public function run(Request $request)
+    {
+        return ! $this->enabled() ?: $this->check($request);
     }
 }

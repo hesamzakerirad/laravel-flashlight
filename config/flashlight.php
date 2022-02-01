@@ -14,10 +14,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Flashlight Class
+    |--------------------------------------------------------------------------
+    |
+    | This is the main class that is used through out the package.
+    |
+    */
+    'flashlight_class' => HesamRad\Flashlight\Flashlight::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Flashlight Middleware
     |--------------------------------------------------------------------------
     |
-    | This class is responsible for everything Flashlight does.
+    | This class the layer every request passes though.
     |
     */
     'middleware_class' => HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,

@@ -21,6 +21,11 @@ class FlashlightServiceProvider extends ServiceProvider
 
         //register middleware
         app('router')->aliasMiddleware('flashlight', config('flashlight.middleware_class'));
+
+        //binding Flashlight as a singleton
+        $this->app->singleton(config('flashlight.flashlight_class'), function() {
+            return new (config('flashlight.flashlight_class'))(config('flashlight'));
+        });
     }
 
     /**
@@ -30,10 +35,9 @@ class FlashlightServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Request::macro('flashlight', function () {
-            $flashlight = new Flashlight(config('flashlight'));
-
-            $flashlight->call($this);
+        //registering a custom macro
+        Request::macro('call', function () {
+            return app(config('flashlight.flashlight_class'))->run($this);
         });
     }
 }
