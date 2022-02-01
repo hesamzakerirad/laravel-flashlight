@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace HesamRad\Flashlight;
 
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class Flashlight
@@ -101,10 +101,10 @@ class Flashlight
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    public function shouldBeIgnored(Request $request) 
+    public function shouldBeIgnored(Request $request)
     {
-        return 
-            in_array(strtolower($request->method()), $this->excludedMethods()) || 
+        return
+            in_array(strtolower($request->method()), $this->excludedMethods()) ||
             in_array(strtolower($request->path()), $this->excludedUris());
     }
 
@@ -131,7 +131,7 @@ class Flashlight
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    public function log(Request $request) 
+    public function log(Request $request)
     {
         Log::build([
             'driver' => 'single',
@@ -147,9 +147,9 @@ class Flashlight
      */
     public function check(Request $request)
     {
-        return $this->shouldBeIgnored($request) ?: $this->log($request);          
+        return $this->shouldBeIgnored($request) ?: $this->log($request);
     }
-    
+
     /**
      * Checks so see if Flashlight will run.
      *
@@ -158,6 +158,6 @@ class Flashlight
      */
     public function run(Request $request)
     {
-        return ! $this->enabled() ?: $this->check($request);
+        return !$this->enabled() ?: $this->check($request);
     }
 }

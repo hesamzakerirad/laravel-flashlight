@@ -16,14 +16,14 @@ class FlashlightServiceProvider extends ServiceProvider
     {
         //publish config file
         $this->publishes([
-            __DIR__.'/../config/flashlight.php' => config_path('flashlight.php')
+            __DIR__ . '/../config/flashlight.php' => config_path('flashlight.php')
         ], 'flashlight-config');
 
         //register middleware
         app('router')->aliasMiddleware('flashlight', config('flashlight.middleware_class'));
 
         //binding Flashlight as a singleton
-        $this->app->singleton(config('flashlight.flashlight_class'), function() {
+        $this->app->singleton(config('flashlight.flashlight_class'), function () {
             return new (config('flashlight.flashlight_class'))(config('flashlight'));
         });
     }
