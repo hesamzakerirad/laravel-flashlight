@@ -107,7 +107,7 @@ If you wish to customize URIs to log, you can do so by editing `excluded_uris` a
 For example:
 ```php
 'excluded_uris' => [
-    '/admin/*',
+    'admins*',
 ]
 ```
 By doing this, all requests under `/admins` are ignored by Flashlight.
