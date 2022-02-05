@@ -105,7 +105,7 @@ class Flashlight
     {
         return
             in_array(strtolower($request->method()), $this->excludedMethods()) ||
-            in_array(strtolower($request->path()), $this->excludedUris());
+            $request->is($this->excludedUris());
     }
 
     /**
