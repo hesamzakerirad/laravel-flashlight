@@ -30,6 +30,18 @@ class Flashlight
     }
 
     /**
+     * Modifies Flashlight configuration/s.
+     *
+     * @param  string $key
+     * @param  mixed $value
+     * @return void
+     */
+    public function setConfig(string $key, mixed $value)
+    {
+        return $this->config[$key] = $value;
+    }
+
+    /**
      * Returns the excluded HTTP methods that 
      * are not supposed to be logged by Flashlight.
      *
