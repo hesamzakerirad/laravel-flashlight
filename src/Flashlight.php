@@ -107,17 +107,36 @@ class Flashlight
     }
 
     /**
-     * Checks to see if request should be ignored
-     * or not.
+     * Checks to see if request method is loggable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    public function httpMethodIsNotLoggable(Request $request)
+    {
+        return in_array(strtolower($request->method()), $this->excludedMethods());
+    }
+
+    /**
+     * Checks to see if request uri is loggable.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    public function uriIsNotLoggable(Request $request)
+    {
+        return $request->is($this->excludedUris());
+    }
+
+    /**
+     * Checks to see if request should be ignored.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
     public function shouldBeIgnored(Request $request)
     {
-        return
-            in_array(strtolower($request->method()), $this->excludedMethods()) ||
-            $request->is($this->excludedUris());
+        return $this->httpMethodIsNotLoggable($request) || $this->uriIsNotLoggable($request);
     }
 
     /**
