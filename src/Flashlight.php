@@ -30,15 +30,16 @@ class Flashlight
     }
 
     /**
-     * Modifies Flashlight configuration/s.
+     * Modifies Flashlight configurations.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param  array $config
      * @return void
      */
-    public function setConfig(string $key, mixed $value)
+    public function setConfig($config = [])
     {
-        return $this->config[$key] = $value;
+        foreach ($config as $key => $value) {
+            $this->config[$key] = $value;
+        }
     }
 
     /**
