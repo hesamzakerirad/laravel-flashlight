@@ -3,19 +3,29 @@
 namespace HesamRad\Flashlight\Tests\Unit;
 
 use HesamRad\Flashlight\Tests\TestCase;
- 
+
 class UnitTest extends TestCase
 {
-    public function test_if_flashlight_can_be_enabled() : void
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function flashlight_can_be_enabled()
     {
-        $this->flashlight->setConfig('enabled', true);
+        $this->flashlight->setConfig(['enabled' => true]);
 
         $this->assertTrue($this->flashlight->enabled());
     }
 
-    public function test_if_flashlight_can_be_disabled() : void
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function flashlight_can_be_disabled()
     {
-        $this->flashlight->setConfig('enabled', false);
+        $this->flashlight->setConfig(['enabled' => false]);
 
         $this->assertFalse($this->flashlight->enabled());
     }

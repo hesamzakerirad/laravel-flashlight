@@ -3,9 +3,9 @@
 namespace HesamRad\Flashlight\Tests;
 
 use HesamRad\Flashlight\Flashlight;
-use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
-class TestCase extends PHPUnit_TestCase
+class TestCase extends BaseTestCase
 {
     /**
      * Our Flashlight instance
