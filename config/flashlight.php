@@ -40,7 +40,7 @@ return [
     | The address in which all Flashlight logs are stored.
     |
     */
-    'path_to_log_file' => storage_path('logs/Flashlight.log'),
+    'path_to_log_file' => storage_path('logs/flashlight.log'),
 
     /*
     |--------------------------------------------------------------------------
