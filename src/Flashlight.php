@@ -3,6 +3,7 @@
 namespace HesamRad\Flashlight;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class Flashlight
@@ -86,6 +87,28 @@ class Flashlight
     }
 
     /**
+     * Checks to see if Flashlight can write logs
+     * to database.
+     *
+     * @return bool
+     */
+    public function canLogToDatabase()
+    {
+        return $this->config('log_to_database') == true;
+    }
+
+    /**
+     * Checks to see if Flashlight can write logs
+     * to database.
+     *
+     * @return bool
+     */
+    public function canLogToFile()
+    {
+        return $this->config('log_to_file') == true;
+    }
+
+    /**
      * Returns the excluded URIs that 
      * are not supposed to be logged by Flashlight.
      *
@@ -115,7 +138,10 @@ class Flashlight
      */
     public function httpMethodIsNotLoggable(Request $request)
     {
-        return in_array(strtolower($request->method()), $this->excludedMethods());
+        return in_array(
+            strtolower($request->method()), 
+            array_map('strtolower', $this->excludedMethods())
+        );
     }
 
     /**
@@ -141,20 +167,108 @@ class Flashlight
     }
 
     /**
-     * Formats the request in a readble way to be logged.
+     * Returns the IP address of the given request
+     * instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string|null
+     */
+    public function getIp(Request $request)
+    {
+        return $request->ip();
+    }
+
+    /**
+     * Returns the HTTP method used to send 
+     * the given request instance.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return string
      */
-    public function format(Request $request)
+    public function getMethod(Request $request)
     {
-        return json_encode([
-            'ip' => $request->ip(),
-            'method' => $request->method(),
-            'address' => $request->getPathInfo(),
-            'headers' => $this->logHeaders() ? $request->header() : null,
-            'body' => $this->logBody() ? $request->except($this->excludedParameters()) : null
-        ]);
+        return $request->method();
+    }
+
+    /**
+     * Returns the raw path of the given request
+     * instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string
+     */
+    public function getAddress(Request $request)
+    {
+        return $request->getPathInfo();
+    }
+
+    /**
+     * Returns the header values of the given request
+     * instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string
+     */
+    public function getHeaders(Request $request)
+    {
+        return $this->logHeaders() ? json_encode($request->header()) : null;
+    }
+
+    /**
+     * Returns the body of the given request
+     * instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string
+     */
+    public function getBody(Request $request)
+    {
+        return $this->logBody() ? json_encode($request->except($this->excludedParameters())) : null;
+    }
+
+    /**
+     * Extract all the available information
+     * from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function extractData(Request $request)
+    {
+        return [
+            'ip' => $this->getIp($request),
+            'method' => $this->getMethod($request),
+            'address' => $this->getAddress($request),
+            'headers' => $this->getHeaders($request),
+            'body' => $this->getBody($request),
+            'requested_at' => date('Y-m-d H:m:s')
+        ];
+    }
+
+    /**
+     * Stores a log record inside a file.
+     *
+     * @param  array  $data
+     * @return void
+     */
+    public function logToFile(array $data)
+    {
+        Log::build([
+            'driver' => 'single',
+            'path' => $this->config('path_to_log_file')
+        ])->info(json_encode($data));
+    }
+
+    /**
+     * Stores a log record inside the database.
+     *
+     * @param  array  $data
+     * @return void
+     */
+    public function logToDatabase(array $data)
+    {
+        DB::table($this->config('logs_table_name'))
+            ->insert($data);
     }
 
     /**
@@ -165,10 +279,15 @@ class Flashlight
      */
     public function log(Request $request)
     {
-        Log::build([
-            'driver' => 'single',
-            'path' => $this->config('path_to_log_file')
-        ])->info($this->format($request));
+        $data = $this->extractData($request);
+
+        if ($this->canLogToFile()) {
+            $this->logToFile($data);
+        }
+
+        if ($this->canLogToDatabase()) {
+            $this->logToDatabase($data);
+        }
     }
 
     /**

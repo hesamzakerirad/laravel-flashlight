@@ -19,6 +19,13 @@ class FlashlightServiceProvider extends ServiceProvider
             __DIR__ . '/../config/flashlight.php' => config_path('flashlight.php')
         ], 'flashlight-config');
 
+        //publish migration file
+        if (! class_exists('CreateFlashlightLogsTable')) {
+            $this->publishes([
+                __DIR__ . '/../database/migrations/create_flashlight_logs_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_flashlight_logs_table.php'),
+            ], 'flashlight-migration');
+        }
+
         //register middleware
         app('router')->aliasMiddleware('flashlight', config('flashlight.middleware_class'));
 
