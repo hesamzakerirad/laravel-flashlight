@@ -14,7 +14,7 @@ class FeatureTest extends TestCase
      */
     public function flashlight_ignores_an_excluded_http_method()
     {
-        $methodsToExclude = ['get', 'post', 'put', 'patch', 'delete'];
+        $methodsToExclude = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
         $this->flashlight->setConfig(['excluded_methods' => $methodsToExclude]);
 
@@ -54,24 +54,24 @@ class FeatureTest extends TestCase
             'log_body' => true,
         ]);
 
-        $request = Request::create('/', 'get');
+        $request = Request::create('/', 'GET');
 
-        $log = json_decode($this->flashlight->format($request), true);
+        $data = $this->flashlight->extractData($request);
 
-        $this->assertArrayHasKey('ip', $log);
-        $this->assertNotNull($log['ip']);
+        $this->assertArrayHasKey('ip', $data);
+        $this->assertNotNull($data['ip']);
 
-        $this->assertArrayHasKey('method', $log);
-        $this->assertNotNull($log['method']);
+        $this->assertArrayHasKey('method', $data);
+        $this->assertNotNull($data['method']);
 
-        $this->assertArrayHasKey('address', $log);
-        $this->assertNotNull($log['address']);
+        $this->assertArrayHasKey('address', $data);
+        $this->assertNotNull($data['address']);
 
-        $this->assertArrayHasKey('headers', $log);
-        $this->assertNotNull($log['headers']);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertNotNull($data['headers']);
 
-        $this->assertArrayHasKey('body', $log);
-        $this->assertNotNull($log['body']);
+        $this->assertArrayHasKey('body', $data);
+        $this->assertNotNull($data['body']);
     }
 
     /**
@@ -87,12 +87,12 @@ class FeatureTest extends TestCase
             'log_body' => false,
         ]);
 
-        $request = Request::create('/', 'get');
+        $request = Request::create('/', 'GET');
 
-        $log = json_decode($this->flashlight->format($request), true);
+        $data = $this->flashlight->extractData($request);
 
-        $this->assertArrayHasKey('headers', $log);
-        $this->assertNotNull($log['headers']);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertNotNull($data['headers']);
     }
 
     /**
@@ -108,11 +108,11 @@ class FeatureTest extends TestCase
             'log_body' => true,
         ]);
 
-        $request = Request::create('/', 'get');
+        $request = Request::create('/', 'GET');
 
-        $log = json_decode($this->flashlight->format($request), true);
+        $data = $this->flashlight->extractData($request);
 
-        $this->assertArrayHasKey('body', $log);
-        $this->assertNotNull($log['body']);
+        $this->assertArrayHasKey('body', $data);
+        $this->assertNotNull($data['body']);
     }
 }
