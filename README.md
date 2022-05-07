@@ -27,6 +27,13 @@ php artisan vendor:publish --provider="HesamRad\Flashlight\FlashlightServiceProv
 ```
 
 ### Step #3
+Publish migration file. (Only if you want to store logs inside your database.)
+
+```php
+php artisan vendor:publish --provider="HesamRad\Flashlight\FlashlightServiceProvider" --tag="flashlight-migration"
+```
+
+### Step #4
 Apply middleware on routes.
 
 ```php
@@ -51,6 +58,20 @@ If you wish to turn Flashlight on/off for a short time, you can do so by editing
 'enabled' => true
 ```
 Note that by default Flashlight **is** enabled. 
+
+### Database Option
+If you wish to store logs inside your database, you can do so by editing `log_to_database` key inside `flashlight.php` config file under `App/config`.
+```php
+'log_to_database' => true
+```
+Note that by default Flashlight **stores** logs inside the database. 
+
+### File Option
+If you wish to store logs inside a local file, you can do so by editing `log_to_file` key inside `flashlight.php` config file under `App/config`.
+```php
+'log_to_file' => true
+```
+Note that by default Flashlight **stores** logs in a local file called `flashlight.log` under `App/storage/logs`. 
 
 ---
 ### HTTP Method Customization
