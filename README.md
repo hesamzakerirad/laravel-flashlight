@@ -1,11 +1,5 @@
 ![Flashlight Cover](https://raw.githubusercontent.com/hesamzakerirad/laravel-flashlight/master/media/cover.jpg "Flashlight Cover")
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/hesamzakerirad/laravel-flashlight/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/hesamzakerirad/laravel-flashlight/?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/hesamrad/laravel-flashlight.svg)](https://packagist.org/packages/hesamrad/laravel-flashlight)
-![Php Version](https://img.shields.io/badge/php-%3E7.4-4F5B93)
-![Laravel Version](https://img.shields.io/badge/Laravel-%3E7.0-f9322c)
-
-
 # Laravel Flashlight
 Laravel-Flashlight is a minimal package to log incoming requests to your application; it is highly customizable and easy to install.
 
