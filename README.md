@@ -137,3 +137,13 @@ By doing this, all requests under `/admins` are ignored by Flashlight.
 Note that by default all requests **are** logged by Flashlight.
 
 ---
+
+### Log table getting too big?
+
+No problem! Flashlight comes with a prune command to remove old logs to maintain a lighter table inside your storage. 
+
+All you have to do, is to run `php artisan flashlight:prune` command to make this happen.
+
+Note that by default value is 30 days; and Flashlight will remove anything older than that; so if you want to change this value to your liking, you can do so by editing `prune_period` array inside `flashlight.php` config file under `App/config`.
+
+---
