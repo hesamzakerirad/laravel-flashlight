@@ -128,4 +128,17 @@ return [
     |
     */
     'log_body' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Prune Period
+    |--------------------------------------------------------------------------
+    |
+    | This option indicates the number of days within which to keep logs.
+    | 
+    | The default number is 30; which means flashlight can delete log 
+    | records that are older than 30 days.
+    |
+    */
+    'prune_period' => 30,
 ];

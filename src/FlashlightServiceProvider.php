@@ -14,25 +14,51 @@ class FlashlightServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //publish config file
+        /**
+         * Publish the config file to control
+         * Laravel Flashlight
+         * 
+         */
         $this->publishes([
             __DIR__ . '/../config/flashlight.php' => config_path('flashlight.php')
         ], 'flashlight-config');
 
-        //publish migration file
+        /**
+         * Publish the migration file to store
+         * Flashlight logs
+         * 
+         */
         if (! class_exists('CreateFlashlightLogsTable')) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_flashlight_logs_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_flashlight_logs_table.php'),
             ], 'flashlight-migration');
         }
 
-        //register middleware
+        /**
+         * Registering Flashlight middleware 
+         * so you don't have to :)
+         * 
+         */
         app('router')->aliasMiddleware('flashlight', config('flashlight.middleware_class'));
 
-        //binding Flashlight as a singleton
+        /**
+         * Binding Flashlight to the 
+         * application
+         * 
+         */
         $this->app->singleton(config('flashlight.flashlight_class'), function () {
             return new (config('flashlight.flashlight_class'))(config('flashlight'));
         });
+
+        /**
+         * Registering commands
+         * 
+         */
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \HesamRad\Flashlight\Commands\Prune::class,
+            ]);
+        }
     }
 
     /**
