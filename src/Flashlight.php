@@ -30,7 +30,7 @@ class Flashlight
      * @param  \HesamRad\Flashlight\Drivers\Loggable  $config
      * @return void
      */
-    public function __construct(array $config = [], Loggable $driver)
+    public function __construct(array $config = [], Loggable $driver = null)
     {
         $this->config = $config;
         $this->driver = $driver;
