@@ -54,7 +54,7 @@ If you wish to turn Flashlight on/off for a short time, you can do so by editing
 Note that by default Flashlight **is** enabled. 
 
 ### Driver Option
-There are a number of drivers you can choose to log the incoming requests to your application. You could choose `file` or `database` which will respectively store log records in a local file or a database table.
+There are a number of drivers you can choose to log the incoming requests to your application. You could choose `file` or `database` which will respectively store log records in a local file or a database table. You can change the driver by editing `driver` key inside `flashlight.php` config file under `App/config`.
 
 ```php
 'driver' => 'file'
