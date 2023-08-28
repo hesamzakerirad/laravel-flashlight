@@ -30,8 +30,15 @@ class FlashlightServiceProvider extends ServiceProvider
         app('router')->aliasMiddleware('flashlight', config('flashlight.middleware_class'));
 
         // Binding Flashlight to the application.
-        $this->app->singleton(config('flashlight.flashlight_class'), function () {
-            return new (config('flashlight.flashlight_class'))(config('flashlight'), config('flashlight.driver'));
+        $this->app->singleton(\HesamRad\Flashlight\Flashlight::class, function () {
+            $driver = config('flashlight.driver');
+            $concrete = config('flashlight.drivers.' . $driver . '.concrete');
+            $path = config('flashlight.drivers.' . $driver . '.path');
+
+            return new \HesamRad\Flashlight\Flashlight(
+                config('flashlight'), 
+                new $concrete($path) 
+            );
         });
 
         // Registering commands
@@ -51,7 +58,7 @@ class FlashlightServiceProvider extends ServiceProvider
     {
         // Registering a custom macro to Request class.
         Request::macro('call', function () {
-            return app(config('flashlight.flashlight_class'))->run($this);
+            return app(\HesamRad\Flashlight\Flashlight::class)->run($this);
         });
     }
 }

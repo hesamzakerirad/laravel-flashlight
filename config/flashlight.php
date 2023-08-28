@@ -43,6 +43,8 @@ return [
     */
     'flashlight_class' => \HesamRad\Flashlight\Flashlight::class,
 
+        // more drivers will be added
+
     /*
     |--------------------------------------------------------------------------
     | Flashlight Middleware
