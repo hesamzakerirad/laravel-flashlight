@@ -27,6 +27,7 @@ class Flashlight
      * Creates a new Flashlight object.
      *
      * @param  array  $config
+     * @param  \HesamRad\Flashlight\Drivers\Loggable  $config
      * @return void
      */
     public function __construct(array $config = [], Loggable $driver)
@@ -211,11 +212,12 @@ class Flashlight
      * instance.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return string
+     * @return string|null
      */
     public function getHeaders(Request $request)
     {
-        return $this->logHeaders() ? json_encode($request->header()) : null;
+        return $this->logHeaders() ? 
+            json_encode($request->header()) : null;
     }
 
     /**
@@ -223,11 +225,12 @@ class Flashlight
      * instance.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return string
+     * @return string|null
      */
     public function getBody(Request $request)
     {
-        return $this->logBody() ? json_encode($request->except($this->excludedParameters())) : null;
+        return $this->logBody() ? 
+            json_encode($request->except($this->excludedParameters())) : null;
     }
 
     /**
