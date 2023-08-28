@@ -14,36 +14,35 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Driver class
+    | Default Driver class
+    |--------------------------------------------------------------------------
+    |
+    | This option uses the specified driver to log request.
+    |
+    */
+    'driver' => 'file',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Driver classes
     |--------------------------------------------------------------------------
     |
     | This option uses a driver class to store logs.
+    | Currently there is only one driver available: file.
     |
-    |
-    */
-    'driver' => \HesamRad\Flashlight\Drivers\File::class,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Database Table
-    |--------------------------------------------------------------------------
-    |
-    | This is the name of the table Flashlight uses to store logs inside.
+    | file driver     =>  \HesamRad\Flashlight\Drivers\File::class
     |
     */
-    'logs_table_name' => 'flashlight_logs',
+    'drivers' => [
+        'file' => [
+            // The file class to store logs.
+            'concrete' => \HesamRad\Flashlight\Drivers\File::class,
 
-    /*
-    |--------------------------------------------------------------------------
-    | Flashlight Class
-    |--------------------------------------------------------------------------
-    |
-    | This is the main class that is used through out the package.
-    |
-    */
-    'flashlight_class' => \HesamRad\Flashlight\Flashlight::class,
+            // File path in which logs are stored.
+            'path' => storage_path('logs/flashlight.log'),
+        ], 
 
-        // more drivers will be added
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -54,16 +53,6 @@ return [
     |
     */
     'middleware_class' => \HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Flashlight log file
-    |--------------------------------------------------------------------------
-    |
-    | The address in which all Flashlight logs are stored.
-    |
-    */
-    'path_to_log_file' => storage_path('logs/flashlight.log'),
 
     /*
     |--------------------------------------------------------------------------
