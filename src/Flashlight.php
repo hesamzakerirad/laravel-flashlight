@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Log;
 class Flashlight
 {
     /**
+     * The configuration that Flashlight
+     * uses to function.
+     *
+     * @var array
+     */
+    protected array $config;
+    /**
      * Creates a new Flashlight object.
      *
      * @param  array  $config
