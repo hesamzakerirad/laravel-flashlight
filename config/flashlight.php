@@ -14,23 +14,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Database Option
+    | Driver class
     |--------------------------------------------------------------------------
     |
-    | This option is used to enable /disable writing to database.
+    | This option uses a driver class to store logs.
+    |
     |
     */
-    'log_to_database' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | File Option
-    |--------------------------------------------------------------------------
-    |
-    | This option is used to enable /disable writing to file.
-    |
-    */
-    'log_to_file' => true,
+    'driver' => \HesamRad\Flashlight\Drivers\File::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -50,7 +41,7 @@ return [
     | This is the main class that is used through out the package.
     |
     */
-    'flashlight_class' => HesamRad\Flashlight\Flashlight::class,
+    'flashlight_class' => \HesamRad\Flashlight\Flashlight::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -60,7 +51,7 @@ return [
     | This class the layer every request passes though.
     |
     */
-    'middleware_class' => HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,
+    'middleware_class' => \HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,
 
     /*
     |--------------------------------------------------------------------------

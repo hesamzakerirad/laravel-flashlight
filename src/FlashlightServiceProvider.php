@@ -31,7 +31,7 @@ class FlashlightServiceProvider extends ServiceProvider
 
         // Binding Flashlight to the application.
         $this->app->singleton(config('flashlight.flashlight_class'), function () {
-            return new (config('flashlight.flashlight_class'))(config('flashlight'));
+            return new (config('flashlight.flashlight_class'))(config('flashlight'), config('flashlight.driver'));
         });
 
         // Registering commands

@@ -3,8 +3,7 @@
 namespace HesamRad\Flashlight;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use HesamRad\Flashlight\Drivers\Loggable;
 
 class Flashlight
 {
@@ -15,15 +14,25 @@ class Flashlight
      * @var array
      */
     protected array $config;
+
+    /**
+     * The driver class used to log 
+     * the request.
+     *
+     * @var mixed
+     */
+    protected mixed $driver;
+
     /**
      * Creates a new Flashlight object.
      *
      * @param  array  $config
      * @return void
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], Loggable $driver)
     {
         $this->config = $config;
+        $this->driver = $driver;
     }
 
     /**
@@ -62,7 +71,7 @@ class Flashlight
     }
 
     /**
-     * Checks to see if Flashlight is enabled.
+     * Check if Flashlight is enabled.
      *
      * @return bool
      */
@@ -72,7 +81,17 @@ class Flashlight
     }
 
     /**
-     * Checks to see if Flashlight can log request
+     * Check if Flashlight is disabled.
+     *
+     * @return bool
+     */
+    public function disabled()
+    {
+        return $this->enabled() == false;
+    }
+
+    /**
+     * Check if Flashlight can log request
      * headers.
      *
      * @return bool
@@ -83,7 +102,7 @@ class Flashlight
     }
 
     /**
-     * Checks to see if Flashlight can log request
+     * Check if Flashlight can log request
      * body.
      *
      * @return bool
@@ -91,28 +110,6 @@ class Flashlight
     public function logBody()
     {
         return $this->config('log_body') == true;
-    }
-
-    /**
-     * Checks to see if Flashlight can write logs
-     * to database.
-     *
-     * @return bool
-     */
-    public function canLogToDatabase()
-    {
-        return $this->config('log_to_database') == true;
-    }
-
-    /**
-     * Checks to see if Flashlight can write logs
-     * to database.
-     *
-     * @return bool
-     */
-    public function canLogToFile()
-    {
-        return $this->config('log_to_file') == true;
     }
 
     /**
@@ -138,7 +135,7 @@ class Flashlight
     }
 
     /**
-     * Checks to see if request method is loggable.
+     * Check if request method is loggable.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
@@ -152,7 +149,7 @@ class Flashlight
     }
 
     /**
-     * Checks to see if request uri is loggable.
+     * Check if request uri is loggable.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
@@ -163,7 +160,7 @@ class Flashlight
     }
 
     /**
-     * Checks to see if request should be ignored.
+     * Check if request should be ignored.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
@@ -253,32 +250,6 @@ class Flashlight
     }
 
     /**
-     * Stores a log record inside a file.
-     *
-     * @param  array  $data
-     * @return void
-     */
-    public function logToFile(array $data)
-    {
-        Log::build([
-            'driver' => 'single',
-            'path' => $this->config('path_to_log_file')
-        ])->info(json_encode($data));
-    }
-
-    /**
-     * Stores a log record inside the database.
-     *
-     * @param  array  $data
-     * @return void
-     */
-    public function logToDatabase(array $data)
-    {
-        DB::table($this->config('logs_table_name'))
-            ->insert($data);
-    }
-
-    /**
      * Logs the request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -288,34 +259,21 @@ class Flashlight
     {
         $data = $this->extractData($request);
 
-        if ($this->canLogToFile()) {
-            $this->logToFile($data);
-        }
-
-        if ($this->canLogToDatabase()) {
-            $this->logToDatabase($data);
-        }
+        $this->driver->log($data);
     }
 
     /**
-     * Checks to see if request can be logged.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    public function check(Request $request)
-    {
-        return $this->shouldBeIgnored($request) ?: $this->log($request);
-    }
-
-    /**
-     * Checks so see if Flashlight will run.
+     * Turn The Flashlight on and starting looking.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     public function run(Request $request)
     {
-        return !$this->enabled() ?: $this->check($request);
+        if ($this->disabled() or $this->shouldBeIgnored($request)) {
+            return;
+        }
+
+        $this->log($request);
     }
 }
