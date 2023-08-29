@@ -28,9 +28,10 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option uses a driver class to store logs.
-    | Currently there is only one driver available: file.
+    | Currently there are two drivers available: file and database.
     |
     | file driver     =>  \HesamRad\Flashlight\Drivers\File::class
+    | database driver =>  \HesamRad\Flashlight\Drivers\Database::class
     |
     */
     'drivers' => [
@@ -42,6 +43,13 @@ return [
             'path' => storage_path('logs/flashlight.log'),
         ], 
 
+        'database' => [
+            // The file class to store logs.
+            'concrete' => \HesamRad\Flashlight\Drivers\Database::class,
+
+            // Database table in which logs are stored.
+            'path' => 'flashlight_logs',
+        ]
     ],
 
     /*
