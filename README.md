@@ -56,12 +56,12 @@ Note that by default Flashlight **is** enabled.
 ---
 
 ### Driver Option
-There are a number of drivers you can choose to log the incoming requests to your application. You could choose `file` or `database` which will respectively store log records in a local file or a database table. You can change the driver by editing `driver` key inside `flashlight.php` config file under `App/config`.
+There are a number of drivers you can choose to log the incoming requests to your application. You could choose `file` or `database` which will respectively store log records in a local file or a database table. You can change the driver by editing `driver` key inside `flashlight.php` config file under `App/config`. (This value corresponds to an existing key inside `drivers` array.)
 
 ```php
 'driver' => 'file'
 ```
-Note that Flashlight uses `file` driver as its default driver. 
+Note that Flashlight uses `file` driver as its default driver.
 
 ---
 ### HTTP Method Customization
