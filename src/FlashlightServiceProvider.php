@@ -31,13 +31,9 @@ class FlashlightServiceProvider extends ServiceProvider
 
         // Binding Flashlight to the application.
         $this->app->singleton(\HesamRad\Flashlight\Flashlight::class, function () {
-            $driver = config('flashlight.driver');
-            $concrete = config('flashlight.drivers.' . $driver . '.concrete');
-            $path = config('flashlight.drivers.' . $driver . '.path');
-
             return new \HesamRad\Flashlight\Flashlight(
                 config('flashlight'), 
-                new $concrete($path) 
+                config('flashlight.driver')
             );
         });
 

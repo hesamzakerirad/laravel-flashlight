@@ -4,6 +4,8 @@ namespace HesamRad\Flashlight;
 
 use Illuminate\Http\Request;
 use HesamRad\Flashlight\Drivers\Loggable;
+use HesamRad\Flashlight\Exceptions\DriverNotFound;
+use HesamRad\Flashlight\Exceptions\NoDriverSpecified;
 
 class Flashlight
 {
@@ -27,24 +29,29 @@ class Flashlight
      * Creates a new Flashlight object.
      *
      * @param  array  $config
-     * @param  \HesamRad\Flashlight\Drivers\Loggable  $config
+     * @param  string  $driver
      * @return void
      */
-    public function __construct(array $config = [], Loggable $driver = null)
+    public function __construct(array $config = [], $driver = null)
     {
-        $this->config = $config;
-        $this->driver = $driver;
+        $this->setConfig($config);
+
+        $this->setDriver($driver);
     }
 
     /**
-     * Returns Flashlight configuration/s.
+     * Get the given configuration/s.
+     * 
+     * If no key is specufied, all configuration
+     * will be returned.
      *
      * @param  string|null  $key
      * @return mixed
      */
-    public function config(string $key = null)
+    public function getConfig(string $key = null)
     {
-        return isset($key) ? $this->config[$key] : $this->config;
+        return $key === null ? 
+            $this->getConfig : $this->getConfig[$key];
     }
 
     /**
@@ -56,9 +63,32 @@ class Flashlight
     public function setConfig($config = [])
     {
         foreach ($config as $key => $value) {
-            $this->config[$key] = $value;
+            $this->getConfig[$key] = $value;
         }
     }
+
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    public function setDriver($driver = null)
+    {
+        if (is_null($driver)) {
+            throw new NoDriverSpecified;
+        }
+
+        if (! array_key_exists($driver, $this->getConfig('drivers'))) {
+            throw new DriverNotFound($driver);
+        }
+
+        $driver = config('flashlight.drivers.' . $driver);
+
+        $this->driver = new $driver['concrete']($driver['path']);
+
+        return $this;
+    }
+
 
     /**
      * Returns the excluded HTTP methods that 
@@ -68,7 +98,7 @@ class Flashlight
      */
     public function excludedMethods()
     {
-        return $this->config('excluded_methods');
+        return $this->getConfig('excluded_methods');
     }
 
     /**
@@ -78,7 +108,7 @@ class Flashlight
      */
     public function enabled()
     {
-        return $this->config('enabled') == true;
+        return $this->getConfig('enabled') == true;
     }
 
     /**
@@ -99,7 +129,7 @@ class Flashlight
      */
     public function logHeaders()
     {
-        return $this->config('log_headers') == true;
+        return $this->getConfig('log_headers') == true;
     }
 
     /**
@@ -110,7 +140,7 @@ class Flashlight
      */
     public function logBody()
     {
-        return $this->config('log_body') == true;
+        return $this->getConfig('log_body') == true;
     }
 
     /**
@@ -121,7 +151,7 @@ class Flashlight
      */
     public function excludedUris()
     {
-        return $this->config('excluded_uris');
+        return $this->getConfig('excluded_uris');
     }
 
     /**
@@ -132,7 +162,7 @@ class Flashlight
      */
     public function excludedParameters()
     {
-        return $this->config('excluded_parameters');
+        return $this->getConfig('excluded_parameters');
     }
 
     /**
