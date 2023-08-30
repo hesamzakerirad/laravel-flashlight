@@ -63,7 +63,7 @@ class Flashlight
     public function setConfig($config = [])
     {
         foreach ($config as $key => $value) {
-            $this->getConfig[$key] = $value;
+            $this->config[$key] = $value;
         }
     }
 
