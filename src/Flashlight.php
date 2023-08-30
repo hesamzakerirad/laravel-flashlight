@@ -51,7 +51,7 @@ class Flashlight
     public function getConfig(string $key = null)
     {
         return $key === null ? 
-            $this->getConfig : $this->getConfig[$key];
+            $this->config : $this->config[$key];
     }
 
     /**
