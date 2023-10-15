@@ -18,8 +18,7 @@ class Flashlight
     protected array $config;
 
     /**
-     * The driver class used to log 
-     * the request.
+     * The driver used to log the request.
      *
      * @var mixed
      */
@@ -34,7 +33,7 @@ class Flashlight
      */
     public function __construct(array $config = [], $driver = null)
     {
-        $this->setConfig($config);
+        $this->config = $config;
 
         $this->setDriver($driver);
     }
@@ -50,31 +49,51 @@ class Flashlight
      */
     public function getConfig(string $key = null)
     {
-        return $key === null ? 
-            $this->config : $this->config[$key];
+        if ($key === null) {
+            return $this->config;
+        }
+
+        if (! isset($this->config[$key])) {
+            return null;
+        }
+
+        return $this->config[$key];
     }
 
     /**
      * Modifies Flashlight configurations.
      *
      * @param  array $config
-     * @return void
+     * @return self
      */
     public function setConfig($config = [])
     {
         foreach ($config as $key => $value) {
             $this->config[$key] = $value;
         }
+
+        return $this;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getDriver()
     {
         return $this->driver;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param  string  $driver
+     * @return self
+     */
     public function setDriver($driver = null)
     {
-        if (is_null($driver)) {
+        if ($driver === null) {
             throw new NoDriverSpecified;
         }
 
@@ -82,13 +101,12 @@ class Flashlight
             throw new DriverNotFound($driver);
         }
 
-        $driver = config('flashlight.drivers.' . $driver);
+        $driver = $this->getConfig('drivers')[$driver];
 
         $this->driver = new $driver['concrete']($driver['path']);
 
         return $this;
     }
-
 
     /**
      * Returns the excluded HTTP methods that 
@@ -102,13 +120,35 @@ class Flashlight
     }
 
     /**
+     * Enable the Flashlight to start 
+     * logging all incoming requests.
+     *
+     * @return void
+     */
+    public function enable()
+    {
+        return $this->setConfig(['enabled' => true]);
+    }
+
+    /**
      * Check if Flashlight is enabled.
      *
      * @return bool
      */
-    public function enabled()
+    public function isEnabled()
     {
         return $this->getConfig('enabled') == true;
+    }
+
+    /**
+     * Disable the Flashlight to stop 
+     * logging all incoming requests.
+     *
+     * @return void
+     */
+    public function disable()
+    {
+        return $this->setConfig(['enabled' => false]);
     }
 
     /**
@@ -116,9 +156,9 @@ class Flashlight
      *
      * @return bool
      */
-    public function disabled()
+    public function isDisabled()
     {
-        return $this->enabled() == false;
+        return $this->isEnabled() == false;
     }
 
     /**
@@ -286,24 +326,31 @@ class Flashlight
      * Logs the request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @return boolean
      */
     public function log(Request $request)
     {
         $data = $this->extractData($request);
 
-        $this->driver->log($data);
+        try {
+            $this->driver->log($data);
+        } 
+        catch (\Throwable $th) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * Turn The Flashlight on and starting looking.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @return boolean
      */
     public function run(Request $request)
     {
-        if ($this->disabled() or $this->shouldBeIgnored($request)) {
+        if ($this->isDisabled() or $this->shouldBeIgnored($request)) {
             return;
         }
 
