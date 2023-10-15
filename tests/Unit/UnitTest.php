@@ -13,9 +13,9 @@ class UnitTest extends TestCase
      */
     public function flashlight_can_be_enabled()
     {
-        $this->flashlight->setConfig(['enabled' => true]);
+        $this->flashlight->enable();
 
-        $this->assertTrue($this->flashlight->enabled());
+        $this->assertTrue($this->flashlight->isEnabled());
     }
 
     /**
@@ -25,8 +25,8 @@ class UnitTest extends TestCase
      */
     public function flashlight_can_be_disabled()
     {
-        $this->flashlight->setConfig(['enabled' => false]);
+        $this->flashlight->disable();
 
-        $this->assertFalse($this->flashlight->enabled());
+        $this->assertTrue($this->flashlight->isDisabled());
     }
 }
