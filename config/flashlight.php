@@ -14,43 +14,43 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Database Option
+    | Default Driver class
     |--------------------------------------------------------------------------
     |
-    | This option is used to enable /disable writing to database.
+    | This option uses the specified driver to log request.
     |
     */
-    'log_to_database' => true,
+    'driver' => 'file',
 
     /*
     |--------------------------------------------------------------------------
-    | File Option
+    | Driver classes
     |--------------------------------------------------------------------------
     |
-    | This option is used to enable /disable writing to file.
+    | This option uses a driver class to store logs.
+    | Currently there are two drivers available: file and database.
+    |
+    | file driver     =>  \HesamRad\Flashlight\Drivers\File::class
+    | database driver =>  \HesamRad\Flashlight\Drivers\Database::class
     |
     */
-    'log_to_file' => true,
+    'drivers' => [
+        'file' => [
+            // The file class to store logs.
+            'concrete' => \HesamRad\Flashlight\Drivers\File::class,
 
-    /*
-    |--------------------------------------------------------------------------
-    | Database Table
-    |--------------------------------------------------------------------------
-    |
-    | This is the name of the table Flashlight uses to store logs inside.
-    |
-    */
-    'logs_table_name' => 'flashlight_logs',
+            // File path in which logs are stored.
+            'path' => storage_path('logs/flashlight/flashlight.log'),
+        ], 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Flashlight Class
-    |--------------------------------------------------------------------------
-    |
-    | This is the main class that is used through out the package.
-    |
-    */
-    'flashlight_class' => HesamRad\Flashlight\Flashlight::class,
+        'database' => [
+            // The file class to store logs.
+            'concrete' => \HesamRad\Flashlight\Drivers\Database::class,
+
+            // Database table in which logs are stored.
+            'path' => 'flashlight_logs',
+        ]
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -60,17 +60,7 @@ return [
     | This class the layer every request passes though.
     |
     */
-    'middleware_class' => HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Flashlight log file
-    |--------------------------------------------------------------------------
-    |
-    | The address in which all Flashlight logs are stored.
-    |
-    */
-    'path_to_log_file' => storage_path('logs/flashlight.log'),
+    'middleware_class' => \HesamRad\Flashlight\Middleware\FlashlightMiddleware::class,
 
     /*
     |--------------------------------------------------------------------------

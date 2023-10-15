@@ -3,44 +3,109 @@
 namespace HesamRad\Flashlight;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use HesamRad\Flashlight\Drivers\Loggable;
+use HesamRad\Flashlight\Exceptions\DriverNotFound;
+use HesamRad\Flashlight\Exceptions\NoDriverSpecified;
 
 class Flashlight
 {
     /**
+     * The configuration that Flashlight
+     * uses to function.
+     *
+     * @var array
+     */
+    protected array $config;
+
+    /**
+     * The driver used to log the request.
+     *
+     * @var mixed
+     */
+    protected mixed $driver;
+
+    /**
      * Creates a new Flashlight object.
      *
      * @param  array  $config
+     * @param  string  $driver
      * @return void
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], $driver = null)
     {
         $this->config = $config;
+
+        $this->setDriver($driver);
     }
 
     /**
-     * Returns Flashlight configuration/s.
+     * Get the given configuration/s.
+     * 
+     * If no key is specufied, all configuration
+     * will be returned.
      *
      * @param  string|null  $key
      * @return mixed
      */
-    public function config(string $key = null)
+    public function getConfig(string $key = null)
     {
-        return isset($key) ? $this->config[$key] : $this->config;
+        if ($key === null) {
+            return $this->config;
+        }
+
+        if (! isset($this->config[$key])) {
+            return null;
+        }
+
+        return $this->config[$key];
     }
 
     /**
      * Modifies Flashlight configurations.
      *
      * @param  array $config
-     * @return void
+     * @return self
      */
     public function setConfig($config = [])
     {
         foreach ($config as $key => $value) {
             $this->config[$key] = $value;
         }
+
+        return $this;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param  string  $driver
+     * @return self
+     */
+    public function setDriver($driver = null)
+    {
+        if ($driver === null) {
+            throw new NoDriverSpecified;
+        }
+
+        if (! array_key_exists($driver, $this->getConfig('drivers'))) {
+            throw new DriverNotFound($driver);
+        }
+
+        $driver = $this->getConfig('drivers')[$driver];
+
+        $this->driver = new $driver['concrete']($driver['path']);
+
+        return $this;
     }
 
     /**
@@ -51,61 +116,71 @@ class Flashlight
      */
     public function excludedMethods()
     {
-        return $this->config('excluded_methods');
+        return $this->getConfig('excluded_methods');
     }
 
     /**
-     * Checks to see if Flashlight is enabled.
+     * Enable the Flashlight to start 
+     * logging all incoming requests.
+     *
+     * @return void
+     */
+    public function enable()
+    {
+        return $this->setConfig(['enabled' => true]);
+    }
+
+    /**
+     * Check if Flashlight is enabled.
      *
      * @return bool
      */
-    public function enabled()
+    public function isEnabled()
     {
-        return $this->config('enabled') == true;
+        return $this->getConfig('enabled') == true;
     }
 
     /**
-     * Checks to see if Flashlight can log request
+     * Disable the Flashlight to stop 
+     * logging all incoming requests.
+     *
+     * @return void
+     */
+    public function disable()
+    {
+        return $this->setConfig(['enabled' => false]);
+    }
+
+    /**
+     * Check if Flashlight is disabled.
+     *
+     * @return bool
+     */
+    public function isDisabled()
+    {
+        return $this->isEnabled() == false;
+    }
+
+    /**
+     * Check if Flashlight can log request
      * headers.
      *
      * @return bool
      */
     public function logHeaders()
     {
-        return $this->config('log_headers') == true;
+        return $this->getConfig('log_headers') == true;
     }
 
     /**
-     * Checks to see if Flashlight can log request
+     * Check if Flashlight can log request
      * body.
      *
      * @return bool
      */
     public function logBody()
     {
-        return $this->config('log_body') == true;
-    }
-
-    /**
-     * Checks to see if Flashlight can write logs
-     * to database.
-     *
-     * @return bool
-     */
-    public function canLogToDatabase()
-    {
-        return $this->config('log_to_database') == true;
-    }
-
-    /**
-     * Checks to see if Flashlight can write logs
-     * to database.
-     *
-     * @return bool
-     */
-    public function canLogToFile()
-    {
-        return $this->config('log_to_file') == true;
+        return $this->getConfig('log_body') == true;
     }
 
     /**
@@ -116,7 +191,7 @@ class Flashlight
      */
     public function excludedUris()
     {
-        return $this->config('excluded_uris');
+        return $this->getConfig('excluded_uris');
     }
 
     /**
@@ -127,11 +202,11 @@ class Flashlight
      */
     public function excludedParameters()
     {
-        return $this->config('excluded_parameters');
+        return $this->getConfig('excluded_parameters');
     }
 
     /**
-     * Checks to see if request method is loggable.
+     * Check if request method is loggable.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
@@ -145,7 +220,7 @@ class Flashlight
     }
 
     /**
-     * Checks to see if request uri is loggable.
+     * Check if request uri is loggable.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
@@ -156,7 +231,7 @@ class Flashlight
     }
 
     /**
-     * Checks to see if request should be ignored.
+     * Check if request should be ignored.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
@@ -207,11 +282,12 @@ class Flashlight
      * instance.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return string
+     * @return string|null
      */
     public function getHeaders(Request $request)
     {
-        return $this->logHeaders() ? json_encode($request->header()) : null;
+        return $this->logHeaders() ? 
+            json_encode($request->header()) : null;
     }
 
     /**
@@ -219,11 +295,12 @@ class Flashlight
      * instance.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return string
+     * @return string|null
      */
     public function getBody(Request $request)
     {
-        return $this->logBody() ? json_encode($request->except($this->excludedParameters())) : null;
+        return $this->logBody() ? 
+            json_encode($request->except($this->excludedParameters())) : null;
     }
 
     /**
@@ -246,69 +323,37 @@ class Flashlight
     }
 
     /**
-     * Stores a log record inside a file.
-     *
-     * @param  array  $data
-     * @return void
-     */
-    public function logToFile(array $data)
-    {
-        Log::build([
-            'driver' => 'single',
-            'path' => $this->config('path_to_log_file')
-        ])->info(json_encode($data));
-    }
-
-    /**
-     * Stores a log record inside the database.
-     *
-     * @param  array  $data
-     * @return void
-     */
-    public function logToDatabase(array $data)
-    {
-        DB::table($this->config('logs_table_name'))
-            ->insert($data);
-    }
-
-    /**
      * Logs the request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @return boolean
      */
     public function log(Request $request)
     {
         $data = $this->extractData($request);
 
-        if ($this->canLogToFile()) {
-            $this->logToFile($data);
+        try {
+            $this->driver->log($data);
+        } 
+        catch (\Throwable $th) {
+            return false;
         }
 
-        if ($this->canLogToDatabase()) {
-            $this->logToDatabase($data);
-        }
+        return true;
     }
 
     /**
-     * Checks to see if request can be logged.
+     * Turn The Flashlight on and starting looking.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    public function check(Request $request)
-    {
-        return $this->shouldBeIgnored($request) ?: $this->log($request);
-    }
-
-    /**
-     * Checks so see if Flashlight will run.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @return boolean
      */
     public function run(Request $request)
     {
-        return !$this->enabled() ?: $this->check($request);
+        if ($this->isDisabled() or $this->shouldBeIgnored($request)) {
+            return;
+        }
+
+        $this->log($request);
     }
 }

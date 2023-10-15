@@ -53,19 +53,15 @@ If you wish to turn Flashlight on/off for a short time, you can do so by editing
 ```
 Note that by default Flashlight **is** enabled. 
 
-### Database Option
-If you wish to store logs inside your database, you can do so by editing `log_to_database` key inside `flashlight.php` config file under `App/config`.
-```php
-'log_to_database' => true
-```
-Note that by default Flashlight **stores** logs inside the database. 
+---
 
-### File Option
-If you wish to store logs inside a local file, you can do so by editing `log_to_file` key inside `flashlight.php` config file under `App/config`.
+### Driver Option
+There are a number of drivers you can choose to log the incoming requests to your application. You could choose `file` or `database` which will respectively store log records in a local file or a database table. You can change the driver by editing `driver` key inside `flashlight.php` config file under `App/config`. (This value corresponds to an existing key inside `drivers` array.)
+
 ```php
-'log_to_file' => true
+'driver' => 'file'
 ```
-Note that by default Flashlight **stores** logs in a local file called `flashlight.log` under `App/storage/logs`. 
+Note that Flashlight uses `file` driver as its default driver.
 
 ---
 ### HTTP Method Customization

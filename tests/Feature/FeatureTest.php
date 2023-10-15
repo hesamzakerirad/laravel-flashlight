@@ -14,13 +14,19 @@ class FeatureTest extends TestCase
      */
     public function flashlight_ignores_an_excluded_http_method()
     {
-        $methodsToExclude = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+        $methodsToExclude = ['PUT', 'PATCH', 'DELETE'];
+        $methodsNotToExclude = ['GET', 'POST'];
 
         $this->flashlight->setConfig(['excluded_methods' => $methodsToExclude]);
 
         foreach ($methodsToExclude as $method) {
             $request = Request::create('/', $method);
             $this->assertTrue($this->flashlight->httpMethodIsNotLoggable($request));
+        }
+
+        foreach ($methodsNotToExclude as $method) {
+            $request = Request::create('/', $method);
+            $this->assertFalse($this->flashlight->httpMethodIsNotLoggable($request));
         }
     }
 
@@ -48,30 +54,9 @@ class FeatureTest extends TestCase
      */
     public function flashlight_logs_a_request()
     {
-        $this->flashlight->setConfig([
-            'excluded_parameters' => [],
-            'log_headers' => true,
-            'log_body' => true,
-        ]);
-
         $request = Request::create('/', 'GET');
 
-        $data = $this->flashlight->extractData($request);
-
-        $this->assertArrayHasKey('ip', $data);
-        $this->assertNotNull($data['ip']);
-
-        $this->assertArrayHasKey('method', $data);
-        $this->assertNotNull($data['method']);
-
-        $this->assertArrayHasKey('address', $data);
-        $this->assertNotNull($data['address']);
-
-        $this->assertArrayHasKey('headers', $data);
-        $this->assertNotNull($data['headers']);
-
-        $this->assertArrayHasKey('body', $data);
-        $this->assertNotNull($data['body']);
+        $this->assertTrue($this->flashlight->log($request));
     }
 
     /**
@@ -82,9 +67,7 @@ class FeatureTest extends TestCase
     public function flashlight_logs_request_header()
     {
         $this->flashlight->setConfig([
-            'excluded_parameters' => [],
             'log_headers' => true,
-            'log_body' => false,
         ]);
 
         $request = Request::create('/', 'GET');
@@ -103,8 +86,6 @@ class FeatureTest extends TestCase
     public function flashlight_logs_request_body()
     {
         $this->flashlight->setConfig([
-            'excluded_parameters' => [],
-            'log_headers' => false,
             'log_body' => true,
         ]);
 

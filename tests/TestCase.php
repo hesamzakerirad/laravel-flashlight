@@ -23,8 +23,8 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        //I only instantiate an object with no configuration 
-        //to work with it during tests.
-        $this->flashlight = new Flashlight($config = []);
+        $config = require (__DIR__ . '/../config/flashlight.php');
+
+        $this->flashlight = new Flashlight($config, 'file');
     }
 }
