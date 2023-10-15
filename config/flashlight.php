@@ -40,7 +40,7 @@ return [
             'concrete' => \HesamRad\Flashlight\Drivers\File::class,
 
             // File path in which logs are stored.
-            'path' => storage_path('logs/flashlight.log'),
+            'path' => storage_path('logs/flashlight/flashlight.log'),
         ], 
 
         'database' => [

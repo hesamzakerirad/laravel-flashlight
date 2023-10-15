@@ -32,8 +32,9 @@ class File implements Loggable
     public function log($data)
     {
         Log::build([
-            'driver' => 'single',
-            'path' => $this->path
+            'driver' => 'daily',
+            'path' => $this->path,
+            'days' => config('flashlight.prune_period'),
         ])->info(json_encode($data));
     }
 }
