@@ -3,7 +3,6 @@
 namespace HesamRad\Flashlight;
 
 use Illuminate\Http\Request;
-use HesamRad\Flashlight\Drivers\Loggable;
 use HesamRad\Flashlight\Exceptions\DriverNotFound;
 use HesamRad\Flashlight\Exceptions\NoDriverSpecified;
 
@@ -20,9 +19,9 @@ class Flashlight
     /**
      * The driver used to log the request.
      *
-     * @var mixed
+     * @var \HesamRad\Flashlight\Drivers\Loggable
      */
-    protected mixed $driver;
+    protected $driver;
 
     /**
      * Creates a new Flashlight object.
