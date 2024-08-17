@@ -16,7 +16,7 @@ class FlashlightMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $request->call();
+        $request->inspect();
 
         return $next($request);
     }

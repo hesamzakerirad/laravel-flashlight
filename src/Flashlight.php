@@ -342,12 +342,13 @@ class Flashlight
     }
 
     /**
-     * Turn The Flashlight on and starting looking.
+     * Inspect the incoming request if package is 
+     * allowed to do so.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return boolean
      */
-    public function run(Request $request)
+    public function inspect(Request $request)
     {
         if ($this->isDisabled() or $this->shouldBeIgnored($request)) {
             return;

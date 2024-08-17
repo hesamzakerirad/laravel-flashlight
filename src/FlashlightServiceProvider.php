@@ -53,8 +53,8 @@ class FlashlightServiceProvider extends ServiceProvider
     public function boot()
     {
         // Registering a custom macro to Request class.
-        Request::macro('call', function () {
-            return app(\HesamRad\Flashlight\Flashlight::class)->run($this);
+        Request::macro('inspect', function () {
+            return app(\HesamRad\Flashlight\Flashlight::class)->inspect($this);
         });
     }
 }
